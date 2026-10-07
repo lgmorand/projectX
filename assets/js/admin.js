@@ -135,11 +135,12 @@
   function unlock() {
     gate.classList.add("hidden");
     panel.classList.remove("hidden");
+    initGitHubPanel();
     window.ConferenceStore.load().then(function (result) {
       db = result.db;
       sourceLabel.textContent =
         result.source === "local"
-          ? "Brouillon local (non publié) — pensez à exporter le JSON."
+          ? "Brouillon local (non publié) — cliquez sur « Publier sur GitHub » pour le diffuser."
           : "Source : data/conferences.json (version publiée).";
       render();
     });
@@ -195,8 +196,163 @@
 
   document.getElementById("save").addEventListener("click", function () {
     db = window.ConferenceStore.saveLocal(collect());
-    sourceLabel.textContent = "Brouillon local (non publié) — pensez à exporter le JSON.";
-    toast("Modifications enregistrées localement ✅");
+    sourceLabel.textContent = "Brouillon local (non publié) — pensez à publier sur GitHub.";
+    toast("Brouillon enregistré localement ✅");
+  });
+
+  /* --- Publication GitHub --- */
+  var ghFields = {
+    owner: document.getElementById("gh-owner"),
+    repo: document.getElementById("gh-repo"),
+    branch: document.getElementById("gh-branch"),
+    path: document.getElementById("gh-path"),
+    token: document.getElementById("gh-token"),
+    remember: document.getElementById("gh-remember"),
+    status: document.getElementById("gh-status"),
+    settings: document.getElementById("gh-settings")
+  };
+
+  function ghStatus(message, ok) {
+    ghFields.status.textContent = message;
+    ghFields.status.classList.toggle("is-ok", Boolean(ok));
+  }
+
+  function ghConfig() {
+    return {
+      owner: ghFields.owner.value.trim(),
+      repo: ghFields.repo.value.trim(),
+      branch: ghFields.branch.value.trim() || "master",
+      path: ghFields.path.value.trim() || "data/conferences.json"
+    };
+  }
+
+  function applyToken() {
+    var token = ghFields.token.value.trim();
+    if (token) {
+      window.GitHubPublisher.setToken(token, ghFields.remember.checked);
+    }
+    return token || window.GitHubPublisher.getToken();
+  }
+
+  function requireGitHub() {
+    var config = ghConfig();
+    if (!config.owner || !config.repo) {
+      ghFields.settings.open = true;
+      ghStatus("Renseignez le propriétaire et le dépôt.");
+      return null;
+    }
+    if (!applyToken()) {
+      ghFields.settings.open = true;
+      ghStatus("Renseignez un jeton d'accès avec la permission « Contents: write ».");
+      return null;
+    }
+    window.GitHubPublisher.saveRepo(config);
+    return config;
+  }
+
+  function initGitHubPanel() {
+    var detected = window.GitHubPublisher.detectRepo();
+    ghFields.owner.value = detected.owner;
+    ghFields.repo.value = detected.repo;
+    ghFields.branch.value = detected.branch;
+    ghFields.path.value = detected.path;
+
+    var token = window.GitHubPublisher.getToken();
+    if (token) {
+      ghFields.token.value = token;
+      ghStatus("Jeton mémorisé dans ce navigateur.", true);
+    } else {
+      ghFields.settings.open = !detected.owner;
+    }
+  }
+
+  ghFields.remember.addEventListener("change", function () {
+    var token = ghFields.token.value.trim();
+    window.GitHubPublisher.setToken(token, ghFields.remember.checked);
+    ghStatus(
+      ghFields.remember.checked
+        ? "Le jeton sera conservé dans ce navigateur."
+        : "Le jeton ne sera pas conservé après fermeture de l'onglet.",
+      ghFields.remember.checked
+    );
+  });
+
+  document.getElementById("gh-test").addEventListener("click", function () {
+    var config = requireGitHub();
+    if (!config) {
+      return;
+    }
+    ghStatus("Vérification…");
+    window.GitHubPublisher.checkAccess(config)
+      .then(function (repo) {
+        ghStatus("Accès en écriture confirmé sur " + repo.full_name + " ✅", true);
+      })
+      .catch(function (err) {
+        ghStatus(err.message);
+      });
+  });
+
+  document.getElementById("gh-forget").addEventListener("click", function () {
+    window.GitHubPublisher.setToken("");
+    ghFields.token.value = "";
+    ghStatus("Jeton supprimé de ce navigateur.", true);
+  });
+
+  document.getElementById("publish").addEventListener("click", function () {
+    var config = requireGitHub();
+    if (!config) {
+      return;
+    }
+    var button = this;
+    button.disabled = true;
+    ghStatus("Publication en cours…");
+
+    window.GitHubPublisher.publish(config, collect())
+      .then(function (result) {
+        db = result.db;
+        window.ConferenceStore.clearLocal();
+        sourceLabel.textContent =
+          "Publié sur " + config.owner + "/" + config.repo + " (" + config.branch + ").";
+        ghStatus("Commit créé ✅ — le déploiement GitHub Pages démarre.", true);
+        toast("Catalogue publié sur GitHub 🚀");
+        if (result.commitUrl) {
+          window.open(result.commitUrl, "_blank", "noopener");
+        }
+      })
+      .catch(function (err) {
+        ghStatus(err.message);
+        toast("Échec de la publication.");
+      })
+      .then(function () {
+        button.disabled = false;
+      });
+  });
+
+  document.getElementById("pull").addEventListener("click", function () {
+    var config = ghConfig();
+    if (!config.owner || !config.repo) {
+      ghFields.settings.open = true;
+      ghStatus("Renseignez le propriétaire et le dépôt.");
+      return;
+    }
+    applyToken();
+    ghStatus("Lecture du fichier distant…");
+    window.GitHubPublisher.readRemote(config)
+      .then(function (remote) {
+        if (!remote.db) {
+          ghStatus("Le fichier n'existe pas encore sur cette branche.");
+          return;
+        }
+        window.ConferenceStore.clearLocal();
+        db = remote.db;
+        render();
+        sourceLabel.textContent =
+          "Chargé depuis " + config.owner + "/" + config.repo + " (" + config.branch + ").";
+        ghStatus("Catalogue rechargé depuis GitHub ✅", true);
+      })
+      .catch(function (err) {
+        ghStatus(err.message);
+      });
   });
 
   document.getElementById("export").addEventListener("click", function () {

@@ -16,7 +16,7 @@ automatiquement le texte de l'e-mail de demande.
 - **Confidentialité** : aucune donnée n'est envoyée ni stockée sur un serveur, tout reste dans le
   navigateur.
 - **Administration** (`admin.html`) : ajout, édition, réordonnancement et suppression des sessions,
-  protégée par mot de passe.
+  protégée par mot de passe, avec **publication directe du JSON dans le dépôt via l'API GitHub**.
 
 ## Base de données
 
@@ -30,15 +30,35 @@ La « base » est le fichier JSON versionné [`data/conferences.json`](data/conf
 }
 ```
 
-GitHub Pages étant un hébergement **statique**, l'interface d'admin ne peut pas écrire directement
-sur le serveur. Le flux est donc :
+### Édition « côté serveur » depuis l'admin
 
-1. Ouvrir `admin.html`, saisir le mot de passe.
-2. Modifier les sessions, puis **Enregistrer** (brouillon dans `localStorage`, visible immédiatement
-   sur le catalogue de ce navigateur).
-3. **Exporter le JSON** pour télécharger `conferences.json`.
-4. Remplacer `data/conferences.json` dans le dépôt et committer → le workflow redéploie le site.
-5. **Réinitialiser** supprime le brouillon local et recharge la version publiée.
+GitHub Pages est un hébergement **100 % statique** : aucun code serveur ne peut écrire un fichier.
+L'admin contourne cette limite en committant directement `data/conferences.json` **via l'API GitHub
+Contents**. Le fichier du dépôt reste donc la source de vérité, partagée par tous les visiteurs et
+versionnée dans Git.
+
+Mise en place (une seule fois, par administrateur) :
+
+1. Créer un [jeton fine-grained](https://github.com/settings/personal-access-tokens/new) limité à ce
+   dépôt, avec la permission **Repository permissions → Contents : Read and write**.
+2. Ouvrir `admin.html`, saisir le mot de passe, déplier **⚙️ Connexion GitHub**, coller le jeton et
+   cliquer sur **Tester l'accès**.
+3. Modifier les sessions puis cliquer sur **🚀 Publier sur GitHub** → un commit est créé et le
+   workflow redéploie le site.
+
+Boutons disponibles :
+
+| Bouton | Effet |
+| --- | --- |
+| **🚀 Publier sur GitHub** | Commit `data/conferences.json` dans le dépôt (visible par tous) |
+| **Recharger depuis GitHub** | Relit le fichier distant via l'API |
+| **Enregistrer le brouillon** | Sauvegarde locale (`localStorage`), visible seulement dans ce navigateur |
+| **Exporter / Importer le JSON** | Repli manuel, sans jeton |
+| **Réinitialiser** | Supprime le brouillon local et recharge la version publiée |
+
+⚠️ Le jeton reste dans le navigateur de l'administrateur (`localStorage`, ou `sessionStorage` si la
+case « Mémoriser » est décochée) et n'est **jamais** committé. Utilisez un jeton fine-grained limité
+à ce seul dépôt, et révoquez-le en cas de doute.
 
 ## Mot de passe d'administration
 

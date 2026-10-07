@@ -39,8 +39,10 @@
         </div>
 
         <div class="toolbar">
-          <button type="button" class="btn btn--primary" id="add-session">+ Ajouter une session</button>
-          <button type="button" class="btn" id="save">Enregistrer</button>
+          <button type="button" class="btn btn--primary" id="publish">🚀 Publier sur GitHub</button>
+          <button type="button" class="btn" id="add-session">+ Ajouter une session</button>
+          <button type="button" class="btn" id="save">Enregistrer le brouillon</button>
+          <button type="button" class="btn" id="pull">Recharger depuis GitHub</button>
           <button type="button" class="btn" id="export">Exporter le JSON</button>
           <label
             class="btn"
@@ -52,11 +54,68 @@
           <button type="button" class="btn btn--danger" id="reset">Réinitialiser</button>
         </div>
 
+        <details class="panel" id="gh-settings">
+          <summary>⚙️ Connexion GitHub (publication du fichier <code>data/conferences.json</code>)</summary>
+          <p class="muted">
+            GitHub Pages est un hébergement statique : pour écrire réellement la « base », l'admin
+            commit le fichier JSON dans le dépôt via l'API GitHub. Créez un
+            <a
+              href="https://github.com/settings/personal-access-tokens/new"
+              target="_blank"
+              rel="noopener"
+              >jeton fine-grained</a
+            >
+            limité à ce dépôt avec la permission <strong>Contents : Read and write</strong>.
+          </p>
+
+          <div class="form-grid">
+            <div>
+              <label for="gh-owner">Propriétaire</label>
+              <input id="gh-owner" type="text" placeholder="lgmorand" />
+            </div>
+            <div>
+              <label for="gh-repo">Dépôt</label>
+              <input id="gh-repo" type="text" placeholder="projectX" />
+            </div>
+            <div>
+              <label for="gh-branch">Branche</label>
+              <input id="gh-branch" type="text" placeholder="master" />
+            </div>
+            <div>
+              <label for="gh-path">Chemin du fichier</label>
+              <input id="gh-path" type="text" placeholder="data/conferences.json" />
+            </div>
+            <div class="full">
+              <label for="gh-token">Jeton d'accès personnel</label>
+              <input
+                id="gh-token"
+                type="password"
+                autocomplete="off"
+                placeholder="github_pat_…"
+              />
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <button type="button" class="btn" id="gh-test">Tester l'accès</button>
+            <button type="button" class="btn btn--ghost" id="gh-forget">Oublier le jeton</button>
+            <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 0">
+              <input id="gh-remember" type="checkbox" style="width: auto" checked />
+              <span class="muted">Mémoriser le jeton dans ce navigateur</span>
+            </label>
+          </div>
+          <p class="error" id="gh-status"></p>
+
+          <p class="notice">
+            ⚠️ Le jeton reste dans <em>votre</em> navigateur et n'est jamais committé. Utilisez un
+            jeton fine-grained, limité à ce seul dépôt, et révoquez-le en cas de doute.
+          </p>
+        </details>
+
         <p class="notice">
-          Le site est hébergé sur GitHub Pages (statique) : les modifications sont enregistrées dans
-          votre navigateur. Pour les publier définitivement, cliquez sur « Exporter le JSON »,
-          remplacez <code>data/conferences.json</code> dans le dépôt et committez — le workflow
-          GitHub Actions redéploiera le site.
+          « Publier sur GitHub » commit <code>data/conferences.json</code> dans le dépôt : le workflow
+          GitHub Actions redéploie alors le site pour tous les visiteurs. « Enregistrer le brouillon »
+          ne modifie que votre navigateur.
         </p>
 
         <div class="admin-rows" id="admin-rows"></div>
@@ -66,6 +125,7 @@
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
     <script src="assets/js/store.js"></script>
+    <script src="assets/js/github.js"></script>
     <script src="assets/js/admin.js"></script>
   </body>
 </html>
