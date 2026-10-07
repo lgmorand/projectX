@@ -1,0 +1,48 @@
+name: Déploiement GitHub Pages
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Valider le catalogue JSON
+        run: |
+          node -e "const d=require('./data/conferences.json'); if(!Array.isArray(d.sessions)||!d.sessions.length){throw new Error('conferences.json invalide');} d.sessions.forEach(s=>{if(!s.id||!s.title){throw new Error('Session invalide: '+JSON.stringify(s));}}); console.log(d.sessions.length+' sessions validées');"
+
+      - name: Configurer Pages
+        uses: actions/configure-pages@v5
+
+      - name: Préparer l'artefact
+        run: |
+          mkdir -p _site
+          cp index.html admin.html _site/
+          cp -r assets data _site/
+          touch _site/.nojekyll
+
+      - name: Uploader l'artefact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Déployer sur GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

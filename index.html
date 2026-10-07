@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Catalogue de conférences — Rejouez nos sessions chez vous</title>
+    <meta
+      name="description"
+      content="Choisissez les sessions que vous souhaitez rejouer lors de votre journée de conférence."
+    />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="brand" href="index.html">
+          <strong>Catalogue de conférences</strong>
+          <span>Composez votre journée sur mesure</span>
+        </a>
+        <div class="site-header__spacer"></div>
+        <a class="btn btn--ghost btn--small" href="admin.html">Administration</a>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="hero">
+        <h1>Composez votre journée de conférence</h1>
+        <p>
+          Parcourez le catalogue, ajoutez les sessions qui vous intéressent à votre panier, puis
+          cliquez sur « Je veux » pour générer automatiquement votre demande par e-mail.
+        </p>
+      </section>
+
+      <div class="toolbar">
+        <div class="search-input">
+          <input
+            id="search"
+            type="text"
+            placeholder="Rechercher une session ou un mot-clé…"
+            aria-label="Rechercher une session"
+          />
+        </div>
+      </div>
+
+      <div class="layout">
+        <section id="catalog" class="catalog" aria-label="Catalogue des sessions">
+          <p class="muted">Chargement du catalogue…</p>
+        </section>
+
+        <aside class="cart" aria-label="Votre panier">
+          <h2>Votre panier <span class="badge" id="cart-count">0</span></h2>
+          <p class="muted">Les sessions que vous souhaitez rejouer chez vous.</p>
+          <p class="muted" id="cart-empty">Votre panier est vide pour le moment.</p>
+          <ul class="cart__list" id="cart-list"></ul>
+          <button type="button" class="btn btn--primary" id="want-btn" style="width: 100%" disabled>
+            Je veux !
+          </button>
+          <button
+            type="button"
+            class="btn btn--ghost btn--small"
+            id="clear-cart"
+            style="width: 100%; margin-top: 8px"
+            disabled
+          >
+            Vider le panier
+          </button>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        Aucune donnée personnelle n'est stockée sur un serveur. Tout reste dans votre navigateur.
+      </div>
+    </footer>
+
+    <dialog id="request-dialog" aria-labelledby="request-title">
+      <form id="request-form" class="modal__body" method="dialog" novalidate="false">
+        <h2 id="request-title">Votre demande</h2>
+        <p class="muted" id="request-summary"></p>
+
+        <p class="notice">
+          🔒 Aucune donnée n'est stockée sur un serveur : vos informations servent uniquement à
+          composer le texte de l'e-mail, localement dans votre navigateur.
+        </p>
+
+        <div class="form-grid">
+          <div>
+            <label for="prenom">Prénom *</label>
+            <input id="prenom" name="prenom" type="text" required autocomplete="given-name" />
+          </div>
+          <div>
+            <label for="nom">Nom *</label>
+            <input id="nom" name="nom" type="text" required autocomplete="family-name" />
+          </div>
+          <div>
+            <label for="email">E-mail *</label>
+            <input id="email" name="email" type="email" required autocomplete="email" />
+          </div>
+          <div>
+            <label for="telephone">Téléphone *</label>
+            <input id="telephone" name="telephone" type="tel" required autocomplete="tel" />
+          </div>
+          <div>
+            <label for="societe">Société</label>
+            <input id="societe" name="societe" type="text" autocomplete="organization" />
+          </div>
+          <div>
+            <label for="date">Date souhaitée</label>
+            <input id="date" name="date" type="date" />
+          </div>
+          <div class="full">
+            <label for="message">Message complémentaire</label>
+            <textarea id="message" name="message" placeholder="Nombre de participants, lieu, contraintes…"></textarea>
+          </div>
+        </div>
+
+        <div class="modal__actions">
+          <button type="button" class="btn btn--ghost" id="cancel-request">Annuler</button>
+          <a class="btn" id="mailto-btn" href="#">Ouvrir dans ma messagerie</a>
+          <button type="submit" class="btn btn--primary">OK — copier l'e-mail</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="assets/js/store.js"></script>
+    <script src="assets/js/app.js"></script>
+  </body>
+</html>
