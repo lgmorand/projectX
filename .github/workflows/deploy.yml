@@ -22,14 +22,14 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Valider le catalogue JSON
         run: |
           node -e "const d=require('./data/conferences.json'); if(!Array.isArray(d.sessions)||!d.sessions.length){throw new Error('conferences.json invalide');} d.sessions.forEach(s=>{if(!s.id||!s.title){throw new Error('Session invalide: '+JSON.stringify(s));}}); console.log(d.sessions.length+' sessions validées');"
 
       - name: Configurer Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Préparer l'artefact
         run: |
@@ -39,10 +39,10 @@ jobs:
           touch _site/.nojekyll
 
       - name: Uploader l'artefact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: _site
 
       - name: Déployer sur GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
