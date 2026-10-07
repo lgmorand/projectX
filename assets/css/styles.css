@@ -24,11 +24,56 @@ body {
 }
 
 body {
-  background: radial-gradient(1200px 600px at 10% -10%, #1b2b4b 0%, transparent 60%), var(--bg);
+  background: var(--bg);
   color: var(--text);
   font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
   line-height: 1.5;
   min-height: 100vh;
+  position: relative;
+  isolation: isolate;
+}
+
+/* Décor : deux halos colorés en lente dérive + grille fine. 100 % CSS, aucune image. */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: -20vmax;
+  z-index: -1;
+  pointer-events: none;
+}
+
+body::before {
+  background:
+    radial-gradient(42vmax 42vmax at 18% 8%, rgba(47, 129, 247, 0.28), transparent 62%),
+    radial-gradient(38vmax 38vmax at 84% 18%, rgba(163, 113, 247, 0.24), transparent 64%),
+    radial-gradient(44vmax 44vmax at 62% 92%, rgba(63, 185, 80, 0.16), transparent 66%);
+  filter: blur(30px);
+  animation: drift 28s ease-in-out infinite alternate;
+}
+
+body::after {
+  background-image:
+    linear-gradient(rgba(230, 237, 243, 0.038) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(230, 237, 243, 0.038) 1px, transparent 1px);
+  background-size: 46px 46px;
+  mask-image: radial-gradient(70vmax 70vmax at 50% 0%, #000 35%, transparent 78%);
+  -webkit-mask-image: radial-gradient(70vmax 70vmax at 50% 0%, #000 35%, transparent 78%);
+}
+
+@keyframes drift {
+  from {
+    transform: translate3d(-3%, -2%, 0) scale(1);
+  }
+  to {
+    transform: translate3d(3%, 2%, 0) scale(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: none;
+  }
 }
 
 a {
@@ -37,8 +82,8 @@ a {
 
 .site-header {
   border-bottom: 1px solid var(--border);
-  background: rgba(13, 17, 23, 0.85);
-  backdrop-filter: blur(8px);
+  background: rgba(13, 17, 23, 0.72);
+  backdrop-filter: blur(12px);
   position: sticky;
   top: 0;
   z-index: 20;
@@ -211,19 +256,33 @@ textarea {
 }
 
 .card {
-  background: var(--bg-card);
+  background: rgba(28, 33, 40, 0.72);
+  backdrop-filter: blur(10px);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 18px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(47, 129, 247, 0.55);
+  box-shadow: 0 12px 28px rgba(1, 4, 9, 0.5);
 }
 
 .card h3 {
   margin: 0;
   font-size: 1.02rem;
   line-height: 1.35;
+}
+
+.card__description {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
 }
 
 .tags {
@@ -251,7 +310,8 @@ textarea {
 .cart {
   position: sticky;
   top: 92px;
-  background: var(--bg-card);
+  background: rgba(28, 33, 40, 0.78);
+  backdrop-filter: blur(10px);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 18px;

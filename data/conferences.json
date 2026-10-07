@@ -5,76 +5,150 @@
     {
       "id": "ai-for-security",
       "title": "GitHub AI for Security — Getting the Most out of Agentic AppSec",
-      "keywords": ["Copilot Autofix", "Security Campaigns", "Agentic Remediation"]
+      "description": "",
+      "keywords": [
+        "Copilot Autofix",
+        "Security Campaigns",
+        "Agentic Remediation"
+      ]
     },
     {
       "id": "open-weight-models",
       "title": "Open-Weight Models & Model Choice — Picking the Right Brain for the Job",
-      "keywords": ["Model Selection", "Open-Weight Models", "Cost & Latency Tuning"]
+      "description": "",
+      "keywords": [
+        "Model Selection",
+        "Open-Weight Models",
+        "Cost & Latency Tuning"
+      ]
     },
     {
       "id": "spec-driven-development",
       "title": "Building Enterprise ready solutions quickly with GitHub Copilot and Spec-Driven Development methodology",
-      "keywords": ["Custom Agents", "Skills", "Spec-Driven Development", "MCP"]
+      "description": "",
+      "keywords": [
+        "Custom Agents",
+        "Skills",
+        "Spec-Driven Development",
+        "MCP"
+      ]
     },
     {
       "id": "one-agent-to-a-fleet",
       "title": "From One Agent to a Fleet: How We use GitHub Copilot App to Ship .NET",
-      "keywords": ["GitHub Copilot App", "Fleet Management", "Agent Orchestration", "GitHub Copilot CLI", "Applied AI"]
+      "description": "",
+      "keywords": [
+        "GitHub Copilot App",
+        "Fleet Management",
+        "Agent Orchestration",
+        "GitHub Copilot CLI",
+        "Applied AI"
+      ]
     },
     {
       "id": "agent-skills",
       "title": "Supercharge Your Development Workflow with Agent Skills",
-      "keywords": ["Agent Skills"]
+      "description": "",
+      "keywords": [
+        "Agent Skills"
+      ]
     },
     {
       "id": "squad-agent-teams",
       "title": "Squad — AI Agent Teams for Any Project",
-      "keywords": ["Multi-Agent Teams", "Persistent Agents", "Knowledge Sharing"]
+      "description": "",
+      "keywords": [
+        "Multi-Agent Teams",
+        "Persistent Agents",
+        "Knowledge Sharing"
+      ]
     },
     {
       "id": "token-optimization",
       "title": "Token Optimization",
-      "keywords": ["Token Optimization", "Context Engineering"]
+      "description": "",
+      "keywords": [
+        "Token Optimization",
+        "Context Engineering"
+      ]
     },
     {
       "id": "beyond-token-counting",
       "title": "Beyond Token Counting: Measuring Value in AI-Assisted Development",
-      "keywords": ["Developer Productivity", "FinOps", "Engineering Metrics"]
+      "description": "",
+      "keywords": [
+        "Developer Productivity",
+        "FinOps",
+        "Engineering Metrics"
+      ]
     },
     {
       "id": "agentic-workflows",
       "title": "Agentic Workflows",
-      "keywords": ["Agentic Workflows", "GitHub Actions", "GitHub Copilot", "CI/CD", "DevOps Automation", "AI-Assisted Development"]
+      "description": "",
+      "keywords": [
+        "Agentic Workflows",
+        "GitHub Actions",
+        "GitHub Copilot",
+        "CI/CD",
+        "DevOps Automation",
+        "AI-Assisted Development"
+      ]
     },
     {
       "id": "cloud-sre-agents",
       "title": "Power of Cloud & SRE Agents",
-      "keywords": ["SRE Agents", "Auto-Remediation"]
+      "description": "",
+      "keywords": [
+        "SRE Agents",
+        "Auto-Remediation"
+      ]
     },
     {
       "id": "universe-2026-recap",
       "title": "GitHub Universe 2026 Recap — What Shipped, and What to Adopt First",
-      "keywords": ["What's New", "Roadmap Readout", "Adoption Shortlist"]
+      "description": "",
+      "keywords": [
+        "What's New",
+        "Roadmap Readout",
+        "Adoption Shortlist"
+      ]
     },
     {
       "id": "code-faster-review-smarter",
       "title": "Code Faster. Review Smarter.",
-      "keywords": ["Copilot Code Review", "Developer Productivity", "Secure Development"]
+      "description": "",
+      "keywords": [
+        "Copilot Code Review",
+        "Developer Productivity",
+        "Secure Development"
+      ]
     },
     {
       "id": "from-ux-to-code",
       "title": "From UX to Code: Building with Figma & GitHub Copilot",
-      "keywords": ["MCP tools", "AI UX design", "GitHub Copilot", "Business analysis"]
+      "description": "",
+      "keywords": [
+        "MCP tools",
+        "AI UX design",
+        "GitHub Copilot",
+        "Business analysis"
+      ]
     },
     {
       "id": "copilot-cli-fundamentals",
       "title": "Copilot CLI Fundamentals",
-      "keywords": ["Copilot CLI", "MCP & Custom Tooling", "Tips & Tricks"]
+      "description": "",
+      "keywords": [
+        "Copilot CLI",
+        "MCP & Custom Tooling",
+        "Tips & Tricks"
+      ]
     },
     {
       "id": "universe-recap",
       "title": "GitHub Universe Recap",
+      "description": "",
       "keywords": []
     }
   ]

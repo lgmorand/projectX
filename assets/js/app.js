@@ -23,8 +23,7 @@
     form: document.getElementById("request-form"),
     cancel: document.getElementById("cancel-request"),
     mailto: document.getElementById("mailto-btn"),
-    toast: document.getElementById("toast"),
-    summary: document.getElementById("request-summary")
+    toast: document.getElementById("toast")
   };
 
   function escapeHtml(value) {
@@ -90,7 +89,7 @@
     if (!state.filter) {
       return true;
     }
-    var haystack = (session.title + " " + session.keywords.join(" ")).toLowerCase();
+    var haystack = (session.title + " " + session.description + " " + session.keywords.join(" ")).toLowerCase();
     return haystack.indexOf(state.filter) !== -1;
   }
 
@@ -114,6 +113,9 @@
         return (
           '<article class="card">' +
           "<h3>" + escapeHtml(session.title) + "</h3>" +
+          (session.description
+            ? '<p class="card__description">' + escapeHtml(session.description) + "</p>"
+            : "") +
           (tags ? '<ul class="tags">' + tags + "</ul>" : "") +
           '<div class="card__footer">' +
           '<button type="button" class="btn ' + (selected ? "btn--ghost" : "btn--primary") +
@@ -211,38 +213,54 @@
     };
   }
 
-  function legacyCopy(text) {
-    return new Promise(function (resolve, reject) {
-      var area = document.createElement("textarea");
-      area.value = text;
-      area.setAttribute("readonly", "");
-      area.style.position = "fixed";
-      area.style.top = "0";
-      area.style.opacity = "0";
-      document.body.appendChild(area);
-      area.select();
-      area.setSelectionRange(0, text.length);
-      try {
-        if (document.execCommand("copy")) {
-          resolve();
-        } else {
-          reject(new Error("copy failed"));
-        }
-      } catch (err) {
-        reject(err);
-      } finally {
-        document.body.removeChild(area);
+  /* Messages de validation en français, quelle que soit la langue du navigateur. */
+  var VALIDATION_MESSAGES = {
+    email: "Veuillez saisir une adresse e-mail valide, par exemple nom@exemple.fr.",
+    telephone: "Veuillez saisir un numéro de téléphone valide (chiffres, espaces, + ou -)."
+  };
+
+  function validationMessage(field) {
+    var v = field.validity;
+    if (v.valueMissing) {
+      return "Ce champ est obligatoire.";
+    }
+    if (v.typeMismatch || v.patternMismatch) {
+      return VALIDATION_MESSAGES[field.id] || "Le format saisi n'est pas valide.";
+    }
+    if (v.tooShort) {
+      return "Veuillez saisir au moins " + field.minLength + " caractères.";
+    }
+    if (v.badInput) {
+      return "La valeur saisie n'est pas valide.";
+    }
+    return "";
+  }
+
+  function refreshValidity(field) {
+    field.setCustomValidity("");
+    field.setCustomValidity(validationMessage(field));
+  }
+
+  function refreshAllValidity() {
+    Array.prototype.forEach.call(el.form.elements, function (field) {
+      if (field.willValidate) {
+        refreshValidity(field);
       }
     });
   }
 
-  function copyToClipboard(text) {
-    if (navigator.clipboard && window.isSecureContext) {
-      return navigator.clipboard.writeText(text).catch(function () {
-        return legacyCopy(text);
-      });
-    }
-    return legacyCopy(text);
+  function setupFrenchValidation() {
+    Array.prototype.forEach.call(el.form.elements, function (field) {
+      if (!field.willValidate) {
+        return;
+      }
+      var refresh = function () {
+        refreshValidity(field);
+      };
+      field.addEventListener("input", refresh);
+      field.addEventListener("blur", refresh);
+      field.addEventListener("invalid", refresh);
+    });
   }
 
   function updateMailto() {
@@ -280,10 +298,6 @@
   });
 
   el.wantBtn.addEventListener("click", function () {
-    var sessions = cartSessions();
-    el.summary.innerHTML =
-      "<strong>" + sessions.length + "</strong> session(s) sélectionnée(s) : " +
-      escapeHtml(sessions.map(function (s) { return s.title; }).join(" · "));
     updateMailto();
     el.dialog.showModal();
   });
@@ -295,28 +309,18 @@
   el.form.addEventListener("input", updateMailto);
 
   el.mailto.addEventListener("click", function (event) {
+    refreshAllValidity();
     if (!el.form.reportValidity()) {
       event.preventDefault();
       return;
     }
     updateMailto();
-  });
-
-  el.form.addEventListener("submit", function (event) {
-    event.preventDefault();
-    var body = buildEmailBody(readForm());
-    var full = "À : " + CONTACT_EMAIL + "\nObjet : " + MAIL_SUBJECT + "\n\n" + body;
-    copyToClipboard(full)
-      .then(function () {
-        el.dialog.close();
-        toast("Le contenu de l'e-mail a été copié dans le presse-papiers ✅");
-      })
-      .catch(function () {
-        toast("Copie impossible — sélectionnez le texte manuellement.");
-      });
+    el.dialog.close();
+    toast("Votre messagerie s'ouvre avec la demande pré-remplie ✉️");
   });
 
   loadCart();
+  setupFrenchValidation();
 
   window.ConferenceStore.load()
     .then(function (result) {

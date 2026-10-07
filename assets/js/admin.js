@@ -88,6 +88,12 @@
           escapeHtml(session.title) + '" />' +
           "</div>" +
           "<div>" +
+          '<label for="desc-' + index + '">Description</label>' +
+          '<textarea id="desc-' + index + '" data-field="description" rows="3" ' +
+          'placeholder="Résumé affiché sur la fiche de la session…">' +
+          escapeHtml(session.description) + "</textarea>" +
+          "</div>" +
+          "<div>" +
           '<label for="kw-' + index + '">Mots-clés (séparés par des virgules)</label>' +
           '<input id="kw-' + index + '" type="text" data-field="keywords" value="' +
           escapeHtml(session.keywords.join(", ")) + '" />' +
@@ -111,6 +117,7 @@
     var used = {};
     Array.prototype.forEach.call(inputs, function (row, index) {
       var title = row.querySelector('[data-field="title"]').value.trim();
+      var description = row.querySelector('[data-field="description"]').value.trim();
       var keywords = row.querySelector('[data-field="keywords"]').value
         .split(",")
         .map(function (k) {
@@ -126,7 +133,7 @@
         id = (window.ConferenceStore.slugify(title) || "session") + "-" + (index + 1);
       }
       used[id] = true;
-      sessions.push({ id: id, title: title, keywords: keywords });
+      sessions.push({ id: id, title: title, description: description, keywords: keywords });
     });
     db.sessions = sessions;
     return db;
@@ -185,7 +192,7 @@
 
   document.getElementById("add-session").addEventListener("click", function () {
     collect();
-    db.sessions.push({ id: "", title: "Nouvelle session", keywords: [] });
+    db.sessions.push({ id: "", title: "Nouvelle session", description: "", keywords: [] });
     render();
     var last = rows.querySelector(".admin-row:last-child input");
     if (last) {

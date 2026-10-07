@@ -27,7 +27,7 @@
         <h1>Composez votre journée de conférence</h1>
         <p>
           Parcourez le catalogue, ajoutez les sessions qui vous intéressent à votre panier, puis
-          cliquez sur « Je veux » pour générer automatiquement votre demande par e-mail.
+          cliquez sur « Ça m'intéresse » pour générer automatiquement votre demande par e-mail.
         </p>
       </section>
 
@@ -53,7 +53,7 @@
           <p class="muted" id="cart-empty">Votre panier est vide pour le moment.</p>
           <ul class="cart__list" id="cart-list"></ul>
           <button type="button" class="btn btn--primary" id="want-btn" style="width: 100%" disabled>
-            Je veux !
+            Ça m'intéresse
           </button>
           <button
             type="button"
@@ -75,9 +75,11 @@
     </footer>
 
     <dialog id="request-dialog" aria-labelledby="request-title">
-      <form id="request-form" class="modal__body" method="dialog" novalidate="false">
+      <form id="request-form" class="modal__body" method="dialog">
         <h2 id="request-title">Votre demande</h2>
-        <p class="muted" id="request-summary"></p>
+        <p class="muted">
+          Renseignez vos coordonnées, nous préparons l'e-mail de demande pour vous.
+        </p>
 
         <p class="notice">
           🔒 Aucune donnée n'est stockée sur un serveur : vos informations servent uniquement à
@@ -99,11 +101,18 @@
           </div>
           <div>
             <label for="telephone">Téléphone *</label>
-            <input id="telephone" name="telephone" type="tel" required autocomplete="tel" />
+            <input
+              id="telephone"
+              name="telephone"
+              type="tel"
+              required
+              autocomplete="tel"
+              pattern="[0-9\s+\-\(\)\.]{6,}"
+            />
           </div>
           <div>
-            <label for="societe">Société</label>
-            <input id="societe" name="societe" type="text" autocomplete="organization" />
+            <label for="societe">Société *</label>
+            <input id="societe" name="societe" type="text" required autocomplete="organization" />
           </div>
           <div>
             <label for="date">Date souhaitée</label>
@@ -117,8 +126,7 @@
 
         <div class="modal__actions">
           <button type="button" class="btn btn--ghost" id="cancel-request">Annuler</button>
-          <a class="btn" id="mailto-btn" href="#">Ouvrir dans ma messagerie</a>
-          <button type="submit" class="btn btn--primary">OK — copier l'e-mail</button>
+          <a class="btn btn--primary" id="mailto-btn" href="#">✉️ Ouvrir dans ma messagerie</a>
         </div>
       </form>
     </dialog>
