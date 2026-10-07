@@ -23,6 +23,7 @@
       return {
         id: item.id || slugify(item.title) || "session-" + (index + 1),
         title: String(item.title || "").trim(),
+        description: String(item.description || "").trim(),
         keywords: Array.isArray(item.keywords)
           ? item.keywords.map(function (k) {
               return String(k).trim();

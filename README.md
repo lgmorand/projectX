@@ -8,15 +8,16 @@ automatiquement le texte de l'e-mail de demande.
 
 ## Fonctionnalités
 
-- **Catalogue** : recherche par titre ou mot-clé, ajout/retrait au panier (persisté localement).
-- **Panier + « Je veux ! »** : ouvre une popup demandant nom, prénom, e-mail, téléphone (société et
-  date souhaitée en option). Le bouton **OK** copie dans le presse-papiers un e-mail prêt à l'emploi.
+- **Catalogue** : recherche par titre, description ou mot-clé, ajout/retrait au panier (persisté localement).
+- **Panier + « Ça m'intéresse »** : ouvre une popup demandant nom, prénom, e-mail, téléphone et société
+  (date souhaitée en option), avec des messages de validation en français.
 - **Bouton « Ouvrir dans ma messagerie »** : lien `mailto:julien@microsoft.com` avec l'objet
   « Organisation d'une journée de conférence » et le corps pré-rempli.
 - **Confidentialité** : aucune donnée n'est envoyée ni stockée sur un serveur, tout reste dans le
   navigateur.
-- **Administration** (`admin.html`) : ajout, édition, réordonnancement et suppression des sessions,
-  protégée par mot de passe, avec **publication directe du JSON dans le dépôt via l'API GitHub**.
+- **Administration** (`admin.html`) : ajout, édition (titre, description, mots-clés), réordonnancement
+  et suppression des sessions, protégée par mot de passe, avec **publication directe du JSON dans le
+  dépôt via l'API GitHub**.
 
 ## Base de données
 
@@ -26,7 +27,14 @@ La « base » est le fichier JSON versionné [`data/conferences.json`](data/conf
 {
   "version": 1,
   "updatedAt": "2026-10-07",
-  "sessions": [{ "id": "token-optimization", "title": "Token Optimization", "keywords": ["..."] }]
+  "sessions": [
+    {
+      "id": "token-optimization",
+      "title": "Token Optimization",
+      "description": "Résumé affiché sur la fiche de la session.",
+      "keywords": ["..."]
+    }
+  ]
 }
 ```
 
